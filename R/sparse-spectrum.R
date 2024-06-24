@@ -78,14 +78,23 @@ set_labels.sparse_spectrum <- function(x, labels) {
 }
 
 #' @export
-plot.sparse_spectrum <- function(x, ggplot = FALSE, xlim = NULL, ...) {
+plot.sparse_spectrum <- function(x, cochlea=FALSE, ggplot = FALSE, xlim = NULL, ...) {
   df <- as.data.frame(x)
+  if (cochlea) {
+    greenwood <- function(frequency) {
+      100 * (1 - (log10( frequency / 165.4 + 0.88 ) / 2.1))
+    }
+    df$x = greenwood(df$x)
+    x_label = 'Cochlea (%)'
+  } else {
+    x_label = x_lab(x)
+  }
   if (ggplot) {
     assert_installed("ggplot2")
       ggplot2::ggplot(df, ggplot2::aes_string(x = "x", xend = "x",
                                               y = 0, yend = "y")) +
       ggplot2::geom_segment() +
-      ggplot2::scale_x_continuous(x_lab(x), limits = xlim) +
+      ggplot2::scale_x_continuous(x_label, limits = xlim) +
       ggplot2::scale_y_continuous(y_lab(x))
   } else {
     n <- nrow(df)
@@ -95,7 +104,7 @@ plot.sparse_spectrum <- function(x, ggplot = FALSE, xlim = NULL, ...) {
       df2$x[I + 1:3] <- df$x[i]
       df2$y[I + 2L] <- df$y[i]
     }
-    plot(df2$x, df2$y, xlab = x_lab(x), ylab = y_lab(x),
+    plot(df2$x, df2$y, xlab = x_label, ylab = y_lab(x),
          type = "l", xlim = xlim, ...)
     if (!is.null(df$labels)) {
       for (i in seq_len(nrow(df))) {
