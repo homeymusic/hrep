@@ -79,7 +79,7 @@ set_labels.sparse_spectrum <- function(x, labels) {
 
 #' @export
 plot.sparse_spectrum <- function(x, cochlea=FALSE, ggplot = FALSE, xlim = NULL,
-                                 trans_log=NULL, ...) {
+                                 trans='identity', ...) {
   df <- as.data.frame(x)
   if (cochlea) {
     greenwood <- function(frequency) {
@@ -95,7 +95,7 @@ plot.sparse_spectrum <- function(x, cochlea=FALSE, ggplot = FALSE, xlim = NULL,
       ggplot2::ggplot(df, ggplot2::aes_string(x = "x", xend = "x",
                                               y = 0, yend = "y")) +
       ggplot2::geom_segment() +
-      ggplot2::scale_x_continuous(x_label, limits = xlim, trans=trans_log) +
+      ggplot2::scale_x_continuous(x_label, limits = xlim, transform=trans) +
       ggplot2::scale_y_continuous(y_lab(x))
   } else {
     n <- nrow(df)
