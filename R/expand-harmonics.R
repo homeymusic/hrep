@@ -22,7 +22,7 @@
 #' @param label_harmonics
 #' If TRUE, then the harmonics in the resulting spectrum are labelled with their harmonic numbers.
 #'
-#' @param octave_ratio
+#' @param pseudo_octave
 #' The octave ratio for stretching and compressing harmonics, defaults to 2.0.
 #'
 #' @rdname expand_harmonics
@@ -35,7 +35,7 @@ expand_harmonics <- function(x,
                              digits = 6,
                              label_harmonics = FALSE,
                              coherent = FALSE,
-                             octave_ratio = 2.0) {
+                             pseudo_octave = 2.0) {
   UseMethod("expand_harmonics")
 }
 
@@ -47,7 +47,7 @@ expand_harmonics.sparse_fr_spectrum <- function(x,
                                                 digits = 6,
                                                 label_harmonics = FALSE,
                                                 coherent = FALSE,
-                                                octave_ratio = 2.0) {
+                                                pseudo_octave = 2.0) {
   expand_harmonics(sparse_pi_spectrum(x),
                    num_harmonics = num_harmonics,
                    roll_off_dB = roll_off_dB,
@@ -65,13 +65,13 @@ expand_harmonics.sparse_pi_spectrum <- function(x,
                                                 digits = 6,
                                                 label_harmonics = FALSE,
                                                 coherent = FALSE,
-                                                octave_ratio = 2.0) {
+                                                pseudo_octave = 2.0) {
   purrr::map2(pitch(x), amp(x),
               function(pitch, amp) {
                 n  <- seq_len(num_harmonics)
                 f0 <- midi_to_freq(pitch)
                 df <- data.frame(
-                  x = freq_to_midi(f0 * octave_ratio ^ log2(n)),
+                  x = freq_to_midi(f0 * pseudo_octave ^ log2(n)),
                   y = 1 * 10 ^ ( -roll_off_dB * log2(n) / 20)
                 )
                 if (label_harmonics) df$labels <- seq_along(df$x)
@@ -89,7 +89,7 @@ expand_harmonics.pi_chord <- function(x,
                                       digits = 6,
                                       label_harmonics = FALSE,
                                       coherent = FALSE,
-                                      octave_ratio = 2.0) {
+                                      pseudo_octave = 2.0) {
   sparse_pi_spectrum(x,
                      num_harmonics = num_harmonics,
                      roll_off_dB = roll_off_dB,

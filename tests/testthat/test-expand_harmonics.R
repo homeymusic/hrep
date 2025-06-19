@@ -89,7 +89,7 @@ test_that('octave ratio stretches and compresses',{
   expect_equal(harmonic_default_result[8], 60+36)
 
   harmonic_explicit_result <- 60 %>%
-    sparse_pi_spectrum(num_harmonics=10, octave_ratio = 2.0) %>%
+    sparse_pi_spectrum(num_harmonics=10, pseudo_octave = 2.0) %>%
     pitch
   expect_equal(harmonic_explicit_result[1], 60)
   expect_equal(harmonic_explicit_result[2], 60+12)
@@ -97,7 +97,7 @@ test_that('octave ratio stretches and compresses',{
   expect_equal(harmonic_explicit_result[8], 60+36)
 
   compressed_result <- 60 %>%
-    sparse_pi_spectrum(num_harmonics=10, octave_ratio = 1.9) %>%
+    sparse_pi_spectrum(num_harmonics=10, pseudo_octave = 1.9) %>%
     pitch
   expect_equal(compressed_result[1], 60)
   expect_equal(compressed_result[2],
@@ -108,7 +108,7 @@ test_that('octave ratio stretches and compresses',{
                freq_to_midi(midi_to_freq(60)*1.9^log2(8)))
 
   stretcheded_result <- 60 %>%
-    sparse_pi_spectrum(num_harmonics=10, octave_ratio = 2.1) %>%
+    sparse_pi_spectrum(num_harmonics=10, pseudo_octave = 2.1) %>%
     pitch
   expect_equal(stretcheded_result[1], 60)
   expect_equal(stretcheded_result[2],
